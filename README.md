@@ -1,5 +1,7 @@
 # XMLDevourer
 
+[![Tests](https://github.com/CrazySailing/XMLDevourer/actions/workflows/tests.yml/badge.svg?branch=main&event=push)](https://github.com/CrazySailing/XMLDevourer/actions/workflows/tests.yml)
+
 ## Aim
 This project aims to implement an XML reader that prints basic information on the XML file. The project should be implemented with the best CI/CD setup possible and will explore the workings of GitHub actions (through automatic builds and test) and Docker deployment. Also used as a tutorial to GitHub and it's features.
 
