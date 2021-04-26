@@ -18,7 +18,7 @@ This project uses Docker as the recomended running enviroment. Provided in `Dock
 
 3. Install _Remote Development_ and _Docker_ extentions.
 4. Open the remote menu. Choose _Add Remote Development Configuration Files_. Add the following to the `.devcontainer/devcontainer.json`:
-``` json
+``` jsonc
 {
 	"name": "Existing Dockerfile",
 
