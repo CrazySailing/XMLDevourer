@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  dotnet:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,9 +16,17 @@ jobs:
       uses: actions/setup-dotnet@v1.7.2
       with:
         dotnet-version: '5.0.x'
-    - name: Install dependencies
+    - name: Install .NET dependencies
       run: dotnet restore
-    - name: Build
+    - name: Build .NET
       run: dotnet build --no-restore
-    - name: Test
+    - name: Test .NET
       run: dotnet test --no-restore --verbosity normal
+  
+  docker:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Docker
+      run: docker build -f Dockerfile .
