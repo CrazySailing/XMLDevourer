@@ -3,6 +3,12 @@ name: Release
 on:
   push:
     branches: [ main ]
+    inputs:
+        tag_name:
+          description: "Tag name"
+          required: false
+          default: latest
+
   workflow_dispatch:
     inputs:
         tag_name:
@@ -11,7 +17,7 @@ on:
           default: latest
 
 env:
-  TAG_NAME: ${{ github.event.inputs.tag_name:-latest }}
+  TAG_NAME: ${{ github.event.inputs.tag_name }}
 
   XMLDevourer_ProjectDirectory: XMLDevourer
   XMLDevourer_ProjectFile: XMLDevourer/XMLDevourer.csproj
