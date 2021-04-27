@@ -10,52 +10,59 @@ on:
         required: true
 
 env:
-  XMLDevourer_Directory: XMLDevourer
+  XMLDevourer_ProjectDirectory: XMLDevourer
   XMLDevourer_ProjectFile: XMLDevourer/XMLDevourer.csproj
-  Solution_Path: XMLDevourer.sln
+  XMLDevourer_SolutionPath: XMLDevourer.sln
   XMLDevourer_Archive: XMLDevourer.zip
-  Actions_Allow_Unsecure_Commands: true # Allows AddPath and SetEnv commands
+
+  RuntimeReadableLinux: linux
+  RuntimeReadableWindows: windows
+  # Actions_Allow_Unsecure_Commands: true # Allows AddPath and SetEnv commands
 
 jobs:
-  # build-windows-release:
-  #   runs-on: windows-latest
+  build-windows-release:
+    runs-on: windows-latest
 
-  #   env:
-  #     RuntimeIdentifier: win-x64
+    env:
+      BuildType: release
+      RuntimeIdentifier: win-x64
+      Framework: net5.0
 
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v2
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
 
-  #   # Install the .NET Core workload
-  #   - name: Install .NET Core
-  #     uses: actions/setup-dotnet@v1
-  #     with:
-  #       dotnet-version: '3.1.302'
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.302'
 
-  #   # Add  MsBuild to the PATH: https://github.com/microsoft/setup-msbuild
-  #   - name: Setup MSBuild.exe
-  #     uses: microsoft/setup-msbuild@v1.0.1
+    # Add  MsBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.1
     
-  #   # Restore the application
-  #   - name:  Release the Wpf application to populate the obj folder
-  #     run: msbuild $env:Solution_Path /t:Release /p:Configuration=Release /p:RuntimeIdentifier=$env:RuntimeIdentifier
+    # Restore the application
+    - name:  Release the Wpf application to populate the obj folder
+      run: msbuild $env:XMLDevourer_SolutionPath /t:$env:BuildType /p:Configuration=$env:BuildType /p:RuntimeIdentifier=$env:RuntimeIdentifier
 
-  #   # Archive the package
-  #   - name: Create archive
-  #     run: Compress-Archive -Path $env:XMLDevourer_Directory\bin\Release\$env:RuntimeIdentifier\* -DestinationPath builds\windows\$env:XMLDevourer_Archive
+    # Archive the package
+    - name: Create archive
+      run: Compress-Archive -Path $env:XMLDevourer_ProjectDirectory\bin\$env:BuildType\$env:RuntimeIdentifier\* -DestinationPath $env:RuntimeReadableWindows-$env:XMLDevourer_Archive
 
-  #   # Upload package as artifact
-  #   - name: Upload math result for job 1
-  #     uses: actions/upload-artifact@v2
-  #     with:
-  #       name: windows-release
-  #       path: builds\windows\$env:XMLDevourer_Archive
+    # Upload package as artifact
+    - name: Upload math result for job 1
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-release
+        path: builds\windows\$env:XMLDevourer_Archive
+
 
   build-linux-release:
     runs-on: ubuntu-latest
 
     env:
+      BuildType: release
       RuntimeIdentifier: linux-x64
       Framework: net5.0
 
@@ -66,51 +73,37 @@ jobs:
       with:
         dotnet-version: '5.0.x'
     - name: Build .NET for release
-      run: dotnet publish ${{ env.XMLDevourer_ProjectFile }} -c release --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
-
-    - name: Display structure of files
-      run: ls -R
-    
-    - name: Echo home
-      run: echo $HOME
-
-    # Archive the package
-    # - name: Create archive
-    #   uses: papeloto/action-zip@v1
-    #   with:
-    #     files: ${{ github.workspace }}/${{ env.XMLDevourer_Directory }}/bin/release/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
-    #     dest: linux-${{ env.XMLDevourer_Archive }}
+      run: dotnet publish ${{ env.XMLDevourer_ProjectFile }} -c ${{ env.BuildType }} --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
 
     # Archive the package
     - name: Create archive
       uses: thedoctor0/zip-release@master
       with:
-        path: ${{ env.XMLDevourer_Directory }}/bin/release/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
-        filename: linux-${{ env.XMLDevourer_Archive }}
-
-    - name: Display structure of files
-      run: ls -R
+        path: ${{ env.XMLDevourer_ProjectDirectory }}/bin/${{ env.BuildType }}/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
+        directory: ${{ env.XMLDevourer_ProjectDirectory }}/bin/${{ env.BuildType }}/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
+        filename: ${{ env.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
 
     # Upload package as artifact
     - name: Upload package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: linux-release
-        path: ${{ github.workspace }}/linux-${{ env.XMLDevourer_Archive }}
+        path: ${{ env.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
+
 
   create-release:
     runs-on: ubuntu-latest
 
     needs: 
-    #- build-windows-release
+    - build-windows-release
     - build-linux-release
 
     steps:
-    # # Get Windows artifacts
-    # - name: Get Windows artifacts
-    #   uses: actions/download-artifact@v2
-    #   with:
-    #     name: windows-release
+    # Get Windows artifacts
+    - name: Get Windows artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: windows-release
     
     # Get Linux artifacts
     - name: Get Linux artifacts
@@ -118,28 +111,11 @@ jobs:
       with:
         name: linux-release
 
-    - name: Display structure of files
-      run: ls -R
-    
-    # Upload release asset - Windows
-    # - name: Update release asset -
-    #   id: upload-release-asset-win
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-    #     asset_path: builds/windows/
-    #     asset_name: ${{ env.XMLDevourer_Archive }}
-    #     asset_content_type: application/zip
-
-    # Upload release asset - Linux
-    - name: Update release asset - Linux
-      id: upload-release-asset-linux
+    # Create release tag
+    - name: Create release tag
       uses: softprops/action-gh-release@v1
-      # if: startsWith(github.ref, 'refs/tags/')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.event.inputs.version }}
-        files: ${{ github.workspace }}/linux-${{ env.XMLDevourer_Archive }}
+        files: ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }} ${{ env.RuntimeReadablWindows }}-${{ env.XMLDevourer_Archive }}
