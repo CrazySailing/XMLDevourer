@@ -17,10 +17,6 @@ jobs:
   # See also https://docs.docker.com/docker-hub/builds/
   build-publish-docker:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-
     steps:
       - uses: actions/checkout@v2
 
