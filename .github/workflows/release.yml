@@ -59,7 +59,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: windows-release
-        path: builds\windows\$env:XMLDevourer_Archive
+        path: $env:RuntimeReadableWindows-$env:XMLDevourer_Archive
 
 
   build-linux-release:
@@ -98,15 +98,15 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: 
-    # - build-windows-release
+    - build-windows-release
     - build-linux-release
 
     steps:
-    # # Get Windows artifacts
-    # - name: Get Windows artifacts
-    #   uses: actions/download-artifact@v2
-    #   with:
-    #     name: windows-release
+    # Get Windows artifacts
+    - name: Get Windows artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: windows-release
     
     # Get Linux artifacts
     - name: Get Linux artifacts
@@ -123,4 +123,4 @@ jobs:
         tag_name: ${{ env.DEFAULT_TAG_NAME }}
         files: | 
           ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }} 
-        # ${{ env.RuntimeReadablWindows }}-${{ env.XMLDevourer_Archive }}
+          ${{ env.RuntimeReadableWindows }}-${{ env.XMLDevourer_Archive }}
