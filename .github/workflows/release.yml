@@ -69,12 +69,21 @@ jobs:
     - name: Build .NET for release
       run: dotnet publish ${{ env.XMLDevourer_ProjectFile }} -c release --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
 
+    - name: Display structure of files
+      run: ls -R
+    
+    - name: Echo home
+      run: echo $HOME
+
     # Archive the package
     - name: Create archive
       uses: papeloto/action-zip@v1
       with:
         files: ~/${{ env.XMLDevourer_Directory }}/bin/Release/${{ env.Framework }}/${{ env.RuntimeIdentifier }}/*
         dest: ~/artifacts/linux-${{ env.XMLDevourer_Archive }}
+
+    - name: Display structure of files
+      run: ls -R
 
     # Upload package as artifact
     - name: Upload package as artifact
@@ -103,7 +112,7 @@ jobs:
       with:
         name: linux-release
 
-    - name: Display structure of downloaded files
+    - name: Display structure of files
       run: ls -R
     
     # Upload release asset - Windows
