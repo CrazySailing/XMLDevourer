@@ -72,15 +72,15 @@ jobs:
     - name: Create archive
       uses: papeloto/action-zip@v1
       with:
-        files: $env:XMLDevourer_Directory\bin\Release\$env:RuntimeIdentifier\*
-        dest: builds\linux\${{ env.XMLDevourer_Archive }}
+        files: ${{ env.XMLDevourer_Directory }}/bin/Release/${{ env.Framework }}/${{ env.RuntimeIdentifier }}/*
+        dest: builds/linux/${{ env.XMLDevourer_Archive }}
 
     # Upload package as artifact
     - name: Upload package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: linux-release
-        path: builds\linux\$env:XMLDevourer_Archive
+        path: builds/linux/$env:XMLDevourer_Archive
 
   create-release:
     runs-on: ubuntu-latest
@@ -97,6 +97,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
+        tag_name: ${{ github.event.inputs.version }}
         release_name: ${{ github.event.inputs.version }}
         draft: false
         prerelease: false
@@ -121,7 +122,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: builds\windows\
+        asset_path: builds/windows/
         asset_name: ${{ env.XMLDevourer_Archive }}
         asset_content_type: application/zip
 
@@ -133,6 +134,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: builds\linux\
+        asset_path: builds/linux/
         asset_name: ${{ env.XMLDevourer_Archive }}
         asset_content_type: application/zip
