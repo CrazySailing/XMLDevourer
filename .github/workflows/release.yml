@@ -97,7 +97,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: 
         release_name: ${{ github.event.inputs.version }}
         draft: false
         prerelease: false
@@ -116,7 +115,7 @@ jobs:
     
     # Upload release asset - Windows
     - name: Update release asset -
-      id: upload-release-asset
+      id: upload-release-asset-win
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -127,8 +126,8 @@ jobs:
         asset_content_type: application/zip
 
     # Upload release asset - Linux
-    - name: Update release asset -
-      id: upload-release-asset
+    - name: Update release asset - Linux
+      id: upload-release-asset-linux
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
