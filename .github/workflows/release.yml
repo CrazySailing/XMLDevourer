@@ -13,9 +13,6 @@ env:
   XMLDevourer_SolutionPath: XMLDevourer.sln
   XMLDevourer_Archive: XMLDevourer.zip
   Framework: net5.0
-
-  Linux: linux
-  RuntimeReadableWindows: windows
   
   Actions_Allow_Unsecure_Commands: true # Allows AddPath and SetEnv commands
 
@@ -56,7 +53,7 @@ jobs:
         RuntimeIdentifier: ${{ matrix.RuntimeIdentifier }}
 
     # Archive the package
-    - name: Create archive - ${{ matrix.os }}
+    - name: Create archive - Only Windows
       if: runner.os == 'Windows'
       run: Compress-Archive -Path ${env:XMLDevourer_ProjectDirectory}\bin\${env:BuildType}\${env:Framework}\${env:RuntimeIdentifier}\ -DestinationPath ${env:RuntimeReadable}-${env:XMLDevourer_Archive}
       env:
@@ -65,19 +62,26 @@ jobs:
         RuntimeIdentifier: ${{ matrix.RuntimeIdentifier }}
 
     # Archive the package
-    - name: Create archive - ${{ matrix.os }}
+    - name: Create archive - Only Linux
       if: runner.os == 'Linux'
       uses: thedoctor0/zip-release@master
       with:
         path: ${{ env.XMLDevourer_ProjectDirectory }}/bin/${{ env.BuildType }}/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
-        filename: ${{ matrix.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
+        filename: ${{ env.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
+      env:
+        RuntimeReadable: ${{ matrix.RuntimeReadable }}
+        BuildType: ${{ matrix.BuildType }}
+        RuntimeIdentifier: ${{ matrix.RuntimeIdentifier }}
 
     # Upload package as artifact
     - name: Upload package as artifact - ${{ matrix.os }}
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.RuntimeReadable }}-release
-        path: ${{ env.RuntimeReadableWindows }}-${{ env.XMLDevourer_Archive }}
+        path: ${{ env.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
+      env:
+        RuntimeReadable: ${{ matrix.RuntimeReadable }}
+
 
 
   create-release:
