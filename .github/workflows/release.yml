@@ -12,111 +12,96 @@ env:
   XMLDevourer_ProjectFile: XMLDevourer/XMLDevourer.csproj
   XMLDevourer_SolutionPath: XMLDevourer.sln
   XMLDevourer_Archive: XMLDevourer.zip
+  Framework: net5.0
 
-  RuntimeReadableLinux: linux
+  Linux: linux
   RuntimeReadableWindows: windows
   
   Actions_Allow_Unsecure_Commands: true # Allows AddPath and SetEnv commands
 
 jobs:
-  build-windows-release:
-    runs-on: windows-latest
+  build-release:
+    runs-on: 
 
-    env:
-      BuildType: Release
-      RuntimeIdentifier: win-x64
-      Framework: net5.0
+    stratergy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        
+        include:
+        - os: ubuntu-latest
+          BuildType: Release
+          RuntimeIdentifier: linux-x64   
+          RuntimeReadable: linux
+
+        - os: windows-latest
+          BuildType: Release
+          RuntimeIdentifier: win-x64   
+          RuntimeReadable: windows     
 
     steps:
-    - name: Checkout
+    - name: Checkout - ${{ matrix.os }}
       uses: actions/checkout@v2
 
     # Setup .NET Core SDK 5.0.x
-    - name: Setup .NET Core SDK 5.0.x
+    - name: Setup .NET Core SDK 5.0.x - ${{ matrix.os }}
       uses: actions/setup-dotnet@v1.7.2
       with:
         dotnet-version: '5.0.x'
     
     # Build .NET for release
-    - name: Build .NET for release
-      run: dotnet publish $env:XMLDevourer_ProjectFile -c $env:BuildType --runtime $env:RuntimeIdentifier --framework $env:Framework
+    - name: Build .NET for release - ${{ matrix.os }}
+      run: dotnet publish ${{ env:XMLDevourer_ProjectFile }} -c ${{ env:BuildType }} --runtime ${{ env:RuntimeIdentifier }} --framework ${{ env.Framework }}
+      env:
+        BuildType: ${{ matrix.BuildType }}
+        RuntimeIdentifier: ${{ matrix.RuntimeIdentifier }}
 
     # Archive the package
-    - name: Create archive
-      run: Compress-Archive -Path $env:XMLDevourer_ProjectDirectory\bin\$env:BuildType\$env:Framework\$env:RuntimeIdentifier\* -DestinationPath $env:RuntimeReadableWindows-$env:XMLDevourer_Archive
-
-    # Upload package as artifact
-    - name: Upload package as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: windows-release
-        path: ${env:RuntimeReadableWindows}-${env:XMLDevourer_Archive}
-
-
-  build-linux-release:
-    runs-on: ubuntu-latest
-
-    env:
-      BuildType: release
-      RuntimeIdentifier: linux-x64
-      Framework: net5.0
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    # Setup .NET Core SDK 5.0.x
-    - name: Setup .NET Core SDK 5.0.x
-      uses: actions/setup-dotnet@v1.7.2
-      with:
-        dotnet-version: '5.0.x'
-
-    # Build .NET for release
-    - name: Build .NET for release
-      run: dotnet publish ${{ env.XMLDevourer_ProjectFile }} -c ${{ env.BuildType }} --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
+    - name: Create archive - ${{ matrix.os }}
+      if: runner.os == 'Windows'
+      run: Compress-Archive -Path ${env:XMLDevourer_ProjectDirectory}\bin\${env:BuildType}\${env:Framework}\${env:RuntimeIdentifier}\ -DestinationPath ${env:RuntimeReadable}-${env:XMLDevourer_Archive}
+      env:
+        RuntimeReadable: ${{ matrix.RuntimeReadable }}
+        BuildType: ${{ matrix.BuildType }}
+        RuntimeIdentifier: ${{ matrix.RuntimeIdentifier }}
 
     # Archive the package
-    - name: Create archive
+    - name: Create archive - ${{ matrix.os }}
+      if: runner.os == 'Linux'
       uses: thedoctor0/zip-release@master
       with:
         path: ${{ env.XMLDevourer_ProjectDirectory }}/bin/${{ env.BuildType }}/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
-        filename: ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }}
+        filename: ${{ matrix.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
 
     # Upload package as artifact
-    - name: Upload package as artifact
+    - name: Upload package as artifact - ${{ matrix.os }}
       uses: actions/upload-artifact@v2
       with:
-        name: linux-release
-        path: ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }}
+        name: ${{ matrix.RuntimeReadable }}-release
+        path: ${{ env:RuntimeReadableWindows }}-${{ env:XMLDevourer_Archive }}
 
 
   create-release:
     runs-on: ubuntu-latest
 
+    stratergy:
+      matrix:
+        RuntimeReadable: [ linux, windows ]  
+
     needs: 
-    - build-windows-release
-    - build-linux-release
+    - build-release
 
     steps:
     # Get Windows artifacts
-    - name: Get Windows artifacts
+    - name: Get artifacts - ${{ matrix.RuntimeReadable }}
       uses: actions/download-artifact@v2
       with:
-        name: windows-release
-    
-    # Get Linux artifacts
-    - name: Get Linux artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: linux-release
+        name: ${{ matrix.RuntimeReadable }}-release
 
     # Create release tag
-    - name: Create release tag
+    - name: Create release tag - ${{ matrix.RuntimeReadable }}
       uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ env.DEFAULT_TAG_NAME }}
-        files: | 
-          ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }} 
-          ${{ env.RuntimeReadableWindows }}-${{ env.XMLDevourer_Archive }}
+        files: ${{ matrix.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
