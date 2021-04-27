@@ -31,35 +31,26 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
+    # Setup .NET Core SDK 5.0.x
+    - name: Setup .NET Core SDK 5.0.x
       uses: actions/setup-dotnet@v1.7.2
       with:
         dotnet-version: '5.0.x'
-
-    # Add  MsBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    # - name: Setup MSBuild.exe
-    #   uses: microsoft/setup-msbuild@v1.0.1
     
-    # Restore the application
-    - name: Build .NET for release 
+    # Build .NET for release
+    - name: Build .NET for release
       run: dotnet publish $env:XMLDevourer_ProjectFile -c $env:BuildType --runtime $env:RuntimeIdentifier --framework $env:Framework
-    # run: msbuild $env:XMLDevourer_ProjectFile /t:$env:XMLDevourer_ProjectDirectory /p:Configuration=$env:BuildType /p:RuntimeIdentifier=$env:RuntimeIdentifier /p:Framework=$env:Framework
-
-    # Show filesystem
-    - name: Print system
-      run: dir
 
     # Archive the package
     - name: Create archive
       run: Compress-Archive -Path $env:XMLDevourer_ProjectDirectory\bin\$env:BuildType\$env:Framework\$env:RuntimeIdentifier\* -DestinationPath $env:RuntimeReadableWindows-$env:XMLDevourer_Archive
 
     # Upload package as artifact
-    - name: Upload math result for job 1
+    - name: Upload package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: windows-release
-        path: $env:RuntimeReadableWindows-$env:XMLDevourer_Archive
+        path: ${{ env:RuntimeReadableWindows }}-${{ env:XMLDevourer_Archive }}
 
 
   build-linux-release:
@@ -71,11 +62,16 @@ jobs:
       Framework: net5.0
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Setup .NET Core SDK 5.0.x
     - name: Setup .NET Core SDK 5.0.x
       uses: actions/setup-dotnet@v1.7.2
       with:
         dotnet-version: '5.0.x'
+
+    # Build .NET for release
     - name: Build .NET for release
       run: dotnet publish ${{ env.XMLDevourer_ProjectFile }} -c ${{ env.BuildType }} --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
 
