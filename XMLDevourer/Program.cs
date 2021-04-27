@@ -4,6 +4,10 @@ namespace XMLDevourer
 {
     class Program
     {
+        /// <summary>
+        /// Main method of program.
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
