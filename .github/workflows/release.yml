@@ -1,9 +1,14 @@
 name: Release
 
 on:
-  #push:
-  #  branches: [ main ]
+  push:
+    branches: [ main ]
   workflow_dispatch:
+    inputs:
+        tag_name:
+          description: "Tag name"
+          required: false
+          default: latest
 
 env:
   DEFAULT_TAG_NAME: latest
@@ -100,6 +105,10 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: ${{ matrix.RuntimeReadable }}-release
+
+    # Set version to push to
+    - name: Get version
+      run: "[[ -z '${{ inputs.tag_name }}' ]] && echo 'Empty' || echo 'Not empty'"
 
     # Create release tag
     - name: Create release tag - ${{ matrix.RuntimeReadable }}
