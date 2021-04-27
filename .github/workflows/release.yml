@@ -15,41 +15,41 @@ env:
   Actions_Allow_Unsecure_Commands: true # Allows AddPath and SetEnv commands
 
 jobs:
-  build-windows-release:
-    runs-on: windows-latest
+  # build-windows-release:
+  #   runs-on: windows-latest
 
-    env:
-      RuntimeIdentifier: win-x64
-      XMLDevourer_Archive: XMLDevourer.zip
+  #   env:
+  #     RuntimeIdentifier: win-x64
+  #     XMLDevourer_Archive: XMLDevourer.zip
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '3.1.302'
+  #   # Install the .NET Core workload
+  #   - name: Install .NET Core
+  #     uses: actions/setup-dotnet@v1
+  #     with:
+  #       dotnet-version: '3.1.302'
 
-    # Add  MsBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.1
+  #   # Add  MsBuild to the PATH: https://github.com/microsoft/setup-msbuild
+  #   - name: Setup MSBuild.exe
+  #     uses: microsoft/setup-msbuild@v1.0.1
     
-    # Restore the application
-    - name:  Release the Wpf application to populate the obj folder
-      run: msbuild $env:Solution_Path /t:Release /p:Configuration=Release /p:RuntimeIdentifier=$env:RuntimeIdentifier
+  #   # Restore the application
+  #   - name:  Release the Wpf application to populate the obj folder
+  #     run: msbuild $env:Solution_Path /t:Release /p:Configuration=Release /p:RuntimeIdentifier=$env:RuntimeIdentifier
 
-    # Archive the package
-    - name: Create archive
-      run: Compress-Archive -Path $env:XMLDevourer_Directory\bin\Release\$env:RuntimeIdentifier\* -DestinationPath builds\windows\$env:XMLDevourer_Archive
+  #   # Archive the package
+  #   - name: Create archive
+  #     run: Compress-Archive -Path $env:XMLDevourer_Directory\bin\Release\$env:RuntimeIdentifier\* -DestinationPath builds\windows\$env:XMLDevourer_Archive
 
-    # Upload package as artifact
-    - name: Upload math result for job 1
-      uses: actions/upload-artifact@v2
-      with:
-        name: windows-release
-        path: builds\windows\$env:XMLDevourer_Archive
+  #   # Upload package as artifact
+  #   - name: Upload math result for job 1
+  #     uses: actions/upload-artifact@v2
+  #     with:
+  #       name: windows-release
+  #       path: builds\windows\$env:XMLDevourer_Archive
 
   build-linux-release:
     runs-on: ubuntu-latest
