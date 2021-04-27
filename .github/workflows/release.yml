@@ -42,12 +42,16 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.1
     
     # Restore the application
-    - name:  Release the Wpf application to populate the obj folder
-      run: msbuild $env:XMLDevourer_SolutionPath /t:$env:BuildType /p:Configuration=$env:BuildType /p:RuntimeIdentifier=$env:RuntimeIdentifier
+    - name: Build .NET for release 
+      run: msbuild $env:XMLDevourer_ProjectFile /t:$env:BuildType /p:Configuration=$env:BuildType /p:RuntimeIdentifier=$env:RuntimeIdentifier /p:Framework=$env:Framework
+
+    # Show filesystem
+    - name: Print system
+      run: dir
 
     # Archive the package
     - name: Create archive
-      run: Compress-Archive -Path $env:XMLDevourer_ProjectDirectory\bin\$env:BuildType\$env:RuntimeIdentifier\* -DestinationPath $env:RuntimeReadableWindows-$env:XMLDevourer_Archive
+      run: Compress-Archive -Path $env:XMLDevourer_ProjectDirectory\bin\$env:BuildType\$env:Framework\$env:RuntimeIdentifier\* -DestinationPath $env:RuntimeReadableWindows-$env:XMLDevourer_Archive
 
     # Upload package as artifact
     - name: Upload math result for job 1
