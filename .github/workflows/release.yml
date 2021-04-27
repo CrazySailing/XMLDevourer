@@ -66,7 +66,7 @@ jobs:
       with:
         dotnet-version: '5.0.x'
     - name: Build .NET for release
-      run: dotnet publish ${{ env.XMLDevourer_Archive }} -c release --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
+      run: dotnet publish ${{ env.Solution_Path }} -c release --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
 
     # Archive the package
     - name: Create archive
