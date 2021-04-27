@@ -75,11 +75,18 @@ jobs:
       run: echo $HOME
 
     # Archive the package
+    # - name: Create archive
+    #   uses: papeloto/action-zip@v1
+    #   with:
+    #     files: ${{ github.workspace }}/${{ env.XMLDevourer_Directory }}/bin/release/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
+    #     dest: linux-${{ env.XMLDevourer_Archive }}
+
+    # Archive the package
     - name: Create archive
-      uses: papeloto/action-zip@v1
+      uses: thedoctor0/zip-release@master
       with:
-        files: ${{ github.workspace }}/${{ env.XMLDevourer_Directory }}/bin/release/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
-        dest: linux-${{ env.XMLDevourer_Archive }}
+        path: ${{ env.XMLDevourer_Directory }}/bin/release/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
+        filename: linux-${{ env.XMLDevourer_Archive }}
 
     - name: Display structure of files
       run: ls -R
