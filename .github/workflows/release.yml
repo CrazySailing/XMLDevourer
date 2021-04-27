@@ -11,7 +11,7 @@ on:
           default: latest
 
 env:
-  DEFAULT_TAG_NAME: latest
+  TAG_NAME: ${{ inputs.tag_name }}
 
   XMLDevourer_ProjectDirectory: XMLDevourer
   XMLDevourer_ProjectFile: XMLDevourer/XMLDevourer.csproj
@@ -106,15 +106,11 @@ jobs:
       with:
         name: ${{ matrix.RuntimeReadable }}-release
 
-    # Set version to push to
-    - name: Get version
-      run: "[[ -z '${{ inputs.tag_name }}' ]] && echo 'Empty' || echo 'Not empty'"
-
     # Create release tag
     - name: Create release tag - ${{ matrix.RuntimeReadable }}
       uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.DEFAULT_TAG_NAME }}
+        tag_name: ${{ env.TAG_NAME }}
         files: ${{ matrix.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
