@@ -50,7 +50,7 @@ jobs:
     
     # Build .NET for release
     - name: Build .NET for release - ${{ matrix.os }}
-      run: dotnet publish ${{ env:XMLDevourer_ProjectFile }} -c ${{ env:BuildType }} --runtime ${{ env:RuntimeIdentifier }} --framework ${{ env.Framework }}
+      run: dotnet publish ${{ env.XMLDevourer_ProjectFile }} -c ${{ env.BuildType }} --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
       env:
         BuildType: ${{ matrix.BuildType }}
         RuntimeIdentifier: ${{ matrix.RuntimeIdentifier }}
@@ -77,7 +77,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.RuntimeReadable }}-release
-        path: ${{ env:RuntimeReadableWindows }}-${{ env:XMLDevourer_Archive }}
+        path: ${{ env.RuntimeReadableWindows }}-${{ env.XMLDevourer_Archive }}
 
 
   create-release:
