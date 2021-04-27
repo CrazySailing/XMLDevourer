@@ -120,4 +120,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ env.DEFAULT_TAG_NAME }}
-        files: ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }} ${{ env.RuntimeReadablWindows }}-${{ env.XMLDevourer_Archive }}
+        files: | 
+          ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }} 
+        # ${{ env.RuntimeReadablWindows }}-${{ env.XMLDevourer_Archive }}
