@@ -80,7 +80,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: linux-release
-        path: builds/linux/$env:XMLDevourer_Archive
+        path: builds/linux/${{ env.XMLDevourer_Archive }}
 
   create-release:
     runs-on: ubuntu-latest
