@@ -11,6 +11,7 @@ on:
 
 env:
   XMLDevourer_Directory: XMLDevourer
+  XMLDevourer_ProjectFile: XMLDevourer/XMLDevourer.csproj
   Solution_Path: XMLDevourer.sln
   Actions_Allow_Unsecure_Commands: true # Allows AddPath and SetEnv commands
 
@@ -66,7 +67,7 @@ jobs:
       with:
         dotnet-version: '5.0.x'
     - name: Build .NET for release
-      run: dotnet publish ${{ env.Solution_Path }} -c release --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
+      run: dotnet publish ${{ env.XMLDevourer_ProjectFile }} -c release --runtime ${{ env.RuntimeIdentifier }} --framework ${{ env.Framework }}
 
     # Archive the package
     - name: Create archive
