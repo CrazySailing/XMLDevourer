@@ -23,7 +23,7 @@ jobs:
   build-release:
     runs-on: 
 
-    stratergy:
+    strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
         
