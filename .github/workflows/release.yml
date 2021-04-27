@@ -17,7 +17,7 @@ on:
           default: latest
 
 env:
-  TAG_NAME: ${{ github.event.inputs.tag_name }}
+  TAG_NAME: ${ github.event.inputs.tag_name:='latest' }
 
   XMLDevourer_ProjectDirectory: XMLDevourer
   XMLDevourer_ProjectFile: XMLDevourer/XMLDevourer.csproj
