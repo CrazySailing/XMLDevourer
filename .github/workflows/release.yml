@@ -83,14 +83,14 @@ jobs:
       uses: thedoctor0/zip-release@master
       with:
         path: ${{ env.XMLDevourer_ProjectDirectory }}/bin/${{ env.BuildType }}/${{ env.Framework }}/${{ env.RuntimeIdentifier }}
-        filename: ${{ env.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
+        filename: ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }}
 
     # Upload package as artifact
     - name: Upload package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: linux-release
-        path: ${{ env.RuntimeReadable }}-${{ env.XMLDevourer_Archive }}
+        path: ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }}
 
 
   create-release:
