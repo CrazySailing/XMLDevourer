@@ -43,7 +43,7 @@ jobs:
     
     # Restore the application
     - name: Build .NET for release 
-      run: msbuild $env:XMLDevourer_ProjectFile /t:$env:BuildType /p:Configuration=$env:BuildType /p:RuntimeIdentifier=$env:RuntimeIdentifier /p:Framework=$env:Framework
+      run: msbuild $env:XMLDevourer_ProjectFile /p:Configuration=$env:BuildType /p:RuntimeIdentifier=$env:RuntimeIdentifier /p:Framework=$env:Framework
 
     # Show filesystem
     - name: Print system
