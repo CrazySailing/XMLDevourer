@@ -102,11 +102,11 @@ jobs:
         draft: false
         prerelease: false
 
-    # Get Windows artifacts
-    - name: Get Windows artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: windows-release
+    # # Get Windows artifacts
+    # - name: Get Windows artifacts
+    #   uses: actions/download-artifact@v2
+    #   with:
+    #     name: windows-release
     
     # Get Linux artifacts
     - name: Get Linux artifacts
@@ -115,16 +115,16 @@ jobs:
         name: linux-release
     
     # Upload release asset - Windows
-    - name: Update release asset -
-      id: upload-release-asset-win
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: builds/windows/
-        asset_name: ${{ env.XMLDevourer_Archive }}
-        asset_content_type: application/zip
+    # - name: Update release asset -
+    #   id: upload-release-asset-win
+    #   uses: actions/upload-release-asset@v1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+    #     asset_path: builds/windows/
+    #     asset_name: ${{ env.XMLDevourer_Archive }}
+    #     asset_content_type: application/zip
 
     # Upload release asset - Linux
     - name: Update release asset - Linux
