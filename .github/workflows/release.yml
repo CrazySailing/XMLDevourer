@@ -83,7 +83,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
 
-    stratergy:
+    strategy:
       matrix:
         RuntimeReadable: [ linux, windows ]  
 
