@@ -23,7 +23,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      BuildType: release
+      BuildType: Release
       RuntimeIdentifier: win-x64
       Framework: net5.0
 
