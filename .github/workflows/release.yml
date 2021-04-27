@@ -73,15 +73,15 @@ jobs:
     - name: Create archive
       uses: papeloto/action-zip@v1
       with:
-        files: ${{ env.XMLDevourer_Directory }}/bin/Release/${{ env.Framework }}/${{ env.RuntimeIdentifier }}/*
-        dest: builds/linux/${{ env.XMLDevourer_Archive }}
+        files: ~/${{ env.XMLDevourer_Directory }}/bin/Release/${{ env.Framework }}/${{ env.RuntimeIdentifier }}/*
+        dest: ~/artifacts/linux-${{ env.XMLDevourer_Archive }}
 
     # Upload package as artifact
     - name: Upload package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: linux-release
-        path: builds/linux/${{ env.XMLDevourer_Archive }}
+        path: ~/artifacts/linux-${{ env.XMLDevourer_Archive }}
 
   create-release:
     runs-on: ubuntu-latest
@@ -102,6 +102,9 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: linux-release
+
+    - name: Display structure of downloaded files
+      run: ls -R
     
     # Upload release asset - Windows
     # - name: Update release asset -
@@ -124,4 +127,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.event.inputs.version }}
-        files: builds/linux/${{ env.XMLDevourer_Archive }}
+        files: ~/linux-${{ env.XMLDevourer_Archive }}
