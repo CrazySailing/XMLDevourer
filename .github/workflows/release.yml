@@ -15,7 +15,8 @@ env:
 
   RuntimeReadableLinux: linux
   RuntimeReadableWindows: windows
-  # Actions_Allow_Unsecure_Commands: true # Allows AddPath and SetEnv commands
+  
+  Actions_Allow_Unsecure_Commands: true # Allows AddPath and SetEnv commands
 
 jobs:
   build-windows-release:
