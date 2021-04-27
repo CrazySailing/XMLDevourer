@@ -4,10 +4,10 @@ on:
   #push:
   #  branches: [ main ]
   workflow_dispatch:
-    # inputs:
-    #   version:
-    #     description: 'Version'     
-    #     required: true
+    inputs:
+      version:
+        description: 'Version'     
+        required: true
 
 env:
   XMLDevourer_Directory: XMLDevourer
@@ -119,9 +119,9 @@ jobs:
     - name: Update release asset - Linux
       id: upload-release-asset-linux
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
+      # if: startsWith(github.ref, 'refs/tags/')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        # tag_name: ${{ github.event.inputs.version }}
+        tag_name: ${{ github.event.inputs.version }}
         files: builds/linux/${{ env.XMLDevourer_Archive }}
