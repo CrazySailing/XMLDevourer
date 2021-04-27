@@ -4,12 +4,10 @@ on:
   #push:
   #  branches: [ main ]
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version'     
-        required: true
 
 env:
+  DEFAULT_TAG_NAME: latest
+
   XMLDevourer_ProjectDirectory: XMLDevourer
   XMLDevourer_ProjectFile: XMLDevourer/XMLDevourer.csproj
   XMLDevourer_SolutionPath: XMLDevourer.sln
@@ -117,5 +115,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.event.inputs.version }}
+        tag_name: ${{ env.DEFAULT_TAG_NAME }}
         files: ${{ env.RuntimeReadableLinux }}-${{ env.XMLDevourer_Archive }} ${{ env.RuntimeReadablWindows }}-${{ env.XMLDevourer_Archive }}
