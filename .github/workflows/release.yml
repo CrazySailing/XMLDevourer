@@ -13,6 +13,7 @@ env:
   XMLDevourer_Directory: XMLDevourer
   XMLDevourer_ProjectFile: XMLDevourer/XMLDevourer.csproj
   Solution_Path: XMLDevourer.sln
+  XMLDevourer_Archive: XMLDevourer.zip
   Actions_Allow_Unsecure_Commands: true # Allows AddPath and SetEnv commands
 
 jobs:
@@ -21,7 +22,6 @@ jobs:
 
   #   env:
   #     RuntimeIdentifier: win-x64
-  #     XMLDevourer_Archive: XMLDevourer.zip
 
   #   steps:
   #   - name: Checkout
@@ -58,7 +58,6 @@ jobs:
     env:
       RuntimeIdentifier: linux-x64
       Framework: net5.0
-      XMLDevourer_Archive: XMLDevourer.zip
 
     steps:
     - uses: actions/checkout@v2
